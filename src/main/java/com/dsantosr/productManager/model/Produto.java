@@ -1,18 +1,17 @@
-package com.dsantosr.produto.model;
+package com.dsantosr.productManager.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
+@Setter
+@EqualsAndHashCode(of="id")
+
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of="id")
+
 @Entity
 @Table(name = "produtos")
 public class Produto implements Serializable {
@@ -25,4 +24,7 @@ public class Produto implements Serializable {
     private double preco;
     private int quantidadeEmEstoque;
 
+    @ManyToOne
+    @JoinColumn(name="pedido_id")
+    private Pedido pedido;
 }

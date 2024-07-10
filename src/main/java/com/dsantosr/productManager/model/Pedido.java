@@ -1,24 +1,29 @@
-package com.dsantosr.produto.model;
+package com.dsantosr.productManager.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @EqualsAndHashCode(of="id")
-@AllArgsConstructor
 @NoArgsConstructor
+
 @Entity
 @Table(name = "pedidos")
 public class Pedido implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pedido_id;
+    private Long id;
 
-    @OneToMany(mappedBy="id")
-    private List<Produto> produtos;
+    @OneToMany(mappedBy="pedido")
+    private List<Produto> produtos = new ArrayList<>();
 
+    public Pedido(Long id) {
+        this.id = id;
+    }
 }

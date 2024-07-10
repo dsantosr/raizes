@@ -1,4 +1,4 @@
-package com.dsantosr.produto;
+package com.dsantosr.productManager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
