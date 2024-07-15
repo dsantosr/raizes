@@ -31,8 +31,8 @@ Pré-requisitos
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/yourusername/gerenciamento-produtos-pedidos.git
-cd gerenciamento-produtos-pedidos
+git@github.com:dsantosr/raizes.git
+cd raizes
 ```
 
 2. Construa o projeto:
@@ -74,6 +74,10 @@ spring.h2.console.enabled=true
 * `POST /pedidos` : Cria um novo pedido
 * `PUT /pedidos/{id}` : Atualiza um pedido existente
 * `DELETE /pedidos/{id}` : Remove um pedido
+
+  
+### ItemPedido
+* `POST /itempedido/{pedido_id}/{produto_id}/{quantidade}` : Cria um novo pedido
 
 ## Executando Testes
 Para executar os testes unitários, utilize o comando:
