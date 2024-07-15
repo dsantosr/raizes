@@ -2,6 +2,7 @@ package com.dsantosr.productManager.service;
 
 import com.dsantosr.productManager.model.Produto;
 import com.dsantosr.productManager.repository.ProdutoRepository;
+import com.dsantosr.productManager.service.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,7 @@ public class ProdutoService {
         newObj.get().setQuantidadeEmEstoque(obj.getQuantidadeEmEstoque());
     }
 
-    public Produto findById(Long id) {
-        return repository.findById(id).get();
-    }
-
-    public Produto getId(Long id){
+    public Produto findById(Long id){
         Optional<Produto> produto = repository.findById(id);
         return produto.get();
     }
@@ -46,5 +43,27 @@ public class ProdutoService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    public boolean saidaEstoque(Long id, Integer quantidade) {
+        var produto = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        int estoque = produto.getQuantidadeEmEstoque();
+        if (estoque >= quantidade) {
+            var prod = produto;
+            prod.setQuantidadeEmEstoque(estoque - quantidade);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean entradaEstoque(Long id, Integer quantidade) {
+        var produto = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        int estoque = produto.getQuantidadeEmEstoque();
+        if (quantidade > 0) {
+            var prod = produto;
+            prod.setQuantidadeEmEstoque(estoque + quantidade);
+            return true;
+        }
+        return false;
     }
 }

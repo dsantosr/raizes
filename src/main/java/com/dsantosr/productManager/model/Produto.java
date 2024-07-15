@@ -1,9 +1,12 @@
 package com.dsantosr.productManager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,7 +27,8 @@ public class Produto implements Serializable {
     private double preco;
     private int quantidadeEmEstoque;
 
-    @ManyToOne
-    @JoinColumn(name="pedido_id")
-    private Pedido pedido;
+
+    @OneToMany(mappedBy = "produto_id", cascade = CascadeType.ALL)
+    private Set<ItemPedido> items = new HashSet<>();
+
 }

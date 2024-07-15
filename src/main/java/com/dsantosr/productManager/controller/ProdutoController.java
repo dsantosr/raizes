@@ -6,17 +6,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/produtos")
-@Tag(name = "product-manager")
+@RequestMapping(value = "/api/produtos")
+@Tag(name = "Produto", description = "EndPoints to manage produtos")
 public class ProdutoController {
 
     @Autowired
@@ -35,7 +37,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(produto));
     }
 
-    @Operation(summary = "Realiza a busca por todos os produtos", method = "GET")
+    @Operation(summary = "Realiza a busca de um produto", method = "GET")
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
@@ -44,8 +46,8 @@ public class ProdutoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> get(@PathVariable Long id) {
-        return ResponseEntity.ok().body(service.getId(id));
+    public ResponseEntity<Produto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
     }
 
     @Operation(summary = "Realiza a busca por todos os produtos", method = "GET")
@@ -86,5 +88,37 @@ public class ProdutoController {
     public ResponseEntity<Produto> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+
+    @PutMapping(value = "/saidaEstoque/{id}/{quantidade}")
+    @Transactional
+    public ResponseEntity<String> saidaEstoqueUpdate(@PathVariable(value = "id") Long id, @PathVariable(value = "quantidade") int quantidade) {
+        if(service.saidaEstoque(id, quantidade)){
+            return ResponseEntity.ok().body("Movimentação de estoque atualizada! (Tipo saída)");
+        }
+        return ResponseEntity.ok().body("Quantidade Inválida! (Quantidade de saída maior que o estoque)");
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+
+    @PutMapping(value = "/entradaEstoque/{id}/{quantidade}")
+    @Transactional
+    public ResponseEntity<String> entradaEstoqueUpdate(@PathVariable(value = "id") Long id, @PathVariable(value = "quantidade") int quantidade) {
+        if(service.entradaEstoque(id, quantidade)){
+            return ResponseEntity.ok().body("Movimentação de estoque atualizada! (Tipo entrada)");
+        }
+        return ResponseEntity.ok().body("Quantidade Inválida! (Quantidade de entrada negativa)");
     }
 }

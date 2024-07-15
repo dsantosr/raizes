@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,10 +20,7 @@ public class Pedido implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy="pedido")
-    private List<Produto> produtos = new ArrayList<>();
+    @OneToMany(mappedBy = "pedido_id", cascade = CascadeType.ALL)
+    private Set<ItemPedido> items = new HashSet<>();
 
-    public Pedido(Long id) {
-        this.id = id;
-    }
 }

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pedidos")
-@Tag(name = "product-manager")
+@RequestMapping("/api/pedidos")
+@Tag(name = "Pedido", description = "EndPoints to manage pedidos")
 public class PedidoController {
     @Autowired
     private PedidoService service;
@@ -45,7 +45,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.OK).body(service.getAll());
     }
 
-    @Operation(summary = "Realiza a busca de um pedido por id", method = "GET")
+    @Operation(summary = "Realiza a busca de um pedido", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Requisição inválida"),
@@ -53,8 +53,8 @@ public class PedidoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> getById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getById(id));
+    public ResponseEntity<Pedido> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 
     @Operation(summary = "Realiza a atualização de um pedido", method = "PUT")
@@ -67,7 +67,7 @@ public class PedidoController {
     @PutMapping("/{id}")
     public ResponseEntity<Pedido> update(@PathVariable Long id, @RequestBody Pedido pedido) {
         pedido.setId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(service.create(pedido));
+        return ResponseEntity.status(HttpStatus.OK).body(service.update(pedido));
     }
 
     @Operation(summary = "Realiza a remoção de um pedido", method = "DELETE")

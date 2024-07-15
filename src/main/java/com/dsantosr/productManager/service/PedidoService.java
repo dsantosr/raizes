@@ -3,14 +3,10 @@ package com.dsantosr.productManager.service;
 import com.dsantosr.productManager.model.Pedido;
 import com.dsantosr.productManager.repository.PedidoRepository;
 import com.dsantosr.productManager.service.exception.ResourceNotFoundException;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -19,12 +15,24 @@ public class PedidoService {
     private PedidoRepository repository;
 
     public Pedido create(Pedido Pedido) {
+        repository.save(Pedido);
         return repository.save(Pedido);
     }
 
-    public Pedido getById(Long id){
+    public Pedido findById(Long id){
         var pedido = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         return pedido;
+    }
+
+    public Pedido update(Pedido obj) {
+        Optional<Pedido> newObj = repository.findById(obj.getId());
+        freeUpdate(newObj, obj);
+        return repository.save(newObj.get());
+    }
+
+    public void freeUpdate(Optional<Pedido> newObj, Pedido obj) {
+        newObj.get().setId(obj.getId());
+        newObj.get().setItems(obj.getItems());
     }
 
     public List<Pedido> getAll() {
